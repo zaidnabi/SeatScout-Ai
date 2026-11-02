@@ -38,6 +38,71 @@ export async function listRoom(planId: string, roomNumber: string) {
 }
 
 /**
+ * List all seats for a plan.
+ */
+export async function listSeatsByPlanId(planId: string) {
+  return await db
+    .select()
+    .from(seats)
+    .where(eq(seats.planId, planId));
+}
+
+/**
+ * Get a single seat by ID.
+ */
+export async function getSeatById(seatId: string, planId?: string) {
+  const conditions = planId
+    ? and(eq(seats.id, seatId), eq(seats.planId, planId))
+    : eq(seats.id, seatId);
+
+  const [seat] = await db.select().from(seats).where(conditions);
+  return seat || null;
+}
+
+/**
+ * Update a seat.
+ */
+export async function updateSeat(
+  seatId: string,
+  planId: string,
+  data: Partial<{
+    rollNo: string;
+    courseCode: string;
+    department: string;
+    roomNumber: string;
+    rowNo: number;
+    position: number;
+  }>
+) {
+  const [updated] = await db
+    .update(seats)
+    .set(data)
+    .where(and(eq(seats.id, seatId), eq(seats.planId, planId)))
+    .returning();
+  return updated || null;
+}
+
+/**
+ * Batch insert seats.
+ */
+export async function insertSeats(
+  newSeats: (typeof seats.$inferInsert)[]
+) {
+  if (newSeats.length === 0) return [];
+  // Insert in batches of 500 to avoid parameter limits
+  const batchSize = 500;
+  const results: (typeof seats.$inferSelect)[] = [];
+
+  for (let i = 0; i < newSeats.length; i += batchSize) {
+    const batch = newSeats.slice(i, i + batchSize);
+    const inserted = await db.insert(seats).values(batch).returning();
+    results.push(...inserted);
+  }
+
+  return results;
+}
+
+/**
  * Get all students taking a specific course code on a given exam date.
  */
 export async function studentsInCourse(courseCode: string, examDate: string) {

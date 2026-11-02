@@ -1,6 +1,6 @@
 import { db } from "@/server/db/client";
 import { plans, seats, planFiles, chunks } from "@/server/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 
 export async function createDraftPlan(data: {
   id: string;
@@ -22,6 +22,35 @@ export async function createDraftPlan(data: {
 export async function getPlanById(planId: string) {
   const [plan] = await db.select().from(plans).where(eq(plans.id, planId));
   return plan || null;
+}
+
+export async function listPlans(status?: string) {
+  const conditions = status ? eq(plans.status, status) : undefined;
+  return await db
+    .select({
+      id: plans.id,
+      title: plans.title,
+      examDate: plans.examDate,
+      session: plans.session,
+      status: plans.status,
+      version: plans.version,
+      createdAt: plans.createdAt,
+      updatedAt: plans.updatedAt,
+      seatsCount: sql<number>`(select count(*) from ${seats} where ${seats.planId} = ${plans.id})::int`,
+    })
+    .from(plans)
+    .where(conditions)
+    .orderBy(desc(plans.createdAt));
+}
+
+export async function getLatestActivePlan() {
+  const [latest] = await db
+    .select()
+    .from(plans)
+    .where(eq(plans.status, "active"))
+    .orderBy(desc(plans.createdAt))
+    .limit(1);
+  return latest || null;
 }
 
 /**
@@ -65,5 +94,6 @@ export async function rollbackPlan(planId: string) {
 }
 
 export async function deletePlan(planId: string) {
-  return await db.delete(plans).where(eq(plans.id, planId));
+  const [deleted] = await db.delete(plans).where(eq(plans.id, planId)).returning();
+  return deleted || null;
 }
