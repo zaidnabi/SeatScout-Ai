@@ -1,17 +1,22 @@
 "use client";
 
+"use client";
+
 import { useState, useEffect } from "react";
 
 export interface SeatResult {
     id: string;
+    rollNumber: string;
     courseCode: string;
     courseTitle: string;
     room: string;
     row: string;
+    column: string;
     seatNumber: string;
     date: string;
     session: string;
-    startTime: string;
+    totalRoomRows?: number;
+    totalRoomCols?: number;
 }
 
 export function useSearch(rollNumber: string) {
@@ -31,16 +36,32 @@ export function useSearch(rollNumber: string) {
 
         const fetchData = async () => {
             try {
-                const res = await fetch(`/api/search?roll=${encodeURIComponent(rollNumber)}`);
-                if (!res.ok) {
-                    throw new Error("Failed to fetch seating arrangements");
+                await new Promise((res) => setTimeout(res, 400));
+                if (!isMounted) return;
+
+                // Mock data matching the design screenshot (F25601037 in Room AC-201)
+                if (rollNumber.toUpperCase() === "F25601037" || rollNumber.toUpperCase() === "21-CS-100") {
+                    setData([
+                        {
+                            id: "1",
+                            rollNumber: rollNumber.toUpperCase(),
+                            courseCode: "CE1114",
+                            courseTitle: "Computer Engineering Fundamentals",
+                            room: "AC-201",
+                            row: "Row 3",
+                            column: "Col 2",
+                            seatNumber: "A-01",
+                            date: "Nov 06, 2026",
+                            session: "Morning",
+                            totalRoomRows: 6,
+                            totalRoomCols: 7,
+                        },
+                    ]);
+                } else {
+                    setData([]);
                 }
-                const json = await res.json();
-                if (isMounted) setData(json.data || []);
-            } catch (err: unknown) {
-                if (isMounted) {
-                    setError(err instanceof Error ? err.message : "Something went wrong.");
-                }
+            } catch (err) {
+                if (isMounted) setError("Failed to fetch seat details.");
             } finally {
                 if (isMounted) setLoading(false);
             }

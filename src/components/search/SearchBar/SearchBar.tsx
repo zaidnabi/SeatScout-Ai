@@ -2,11 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search } from "lucide-react";
-import { Input } from "@/components/ui/Input";
+import { Search, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-
-const ROLL_REGEX = /^[0-9]{2,4}-[A-Z]{2,6}-[0-9]{2,5}$/;
 
 export function SearchBar({ initialValue = "" }: { initialValue?: string }) {
     const [value, setValue] = useState(initialValue);
@@ -16,47 +13,38 @@ export function SearchBar({ initialValue = "" }: { initialValue?: string }) {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const uppercaseVal = e.target.value.toUpperCase();
         setValue(uppercaseVal);
-
-        if (uppercaseVal.length > 3 && !ROLL_REGEX.test(uppercaseVal)) {
-            setFormatError("Format should match YY-DEPT-ID (e.g. 21-CS-100)");
-        } else {
-            setFormatError("");
-        }
+        if (formatError) setFormatError("");
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const cleanValue = value.trim();
         if (!cleanValue) {
-            setFormatError("Please enter a roll number");
+            setFormatError("Please enter your roll number");
             return;
         }
-        if (!ROLL_REGEX.test(cleanValue)) {
-            setFormatError("Format should match YY-DEPT-ID (e.g. 21-CS-100)");
-            return;
-        }
-        setFormatError("");
         router.push(`/search?roll=${encodeURIComponent(cleanValue)}`);
     };
 
     return (
-        <form onSubmit={handleSubmit} className="w-full space-y-3">
-            <Input
-                type="text"
-                label="Student Roll Number"
-                placeholder="e.g. 21-CS-100"
-                value={value}
-                onChange={handleChange}
-                error={formatError}
-                autoComplete="off"
-                autoCorrect="off"
-                autoCapitalize="characters"
-                className="text-lg font-bold tracking-wider uppercase h-14"
-            />
-            <Button type="submit" size="lg" className="w-full text-base font-bold shadow-indigo-500/20 shadow-lg flex items-center gap-2">
-                <Search className="h-5 w-5" />
-                <span>Find My Seat</span>
-            </Button>
+        <form onSubmit={handleSubmit} className="w-full space-y-2">
+            <div className="relative flex items-center rounded-2xl border border-[#222238] bg-[#0c0c14] p-2 focus-within:border-purple-500 purple-glow">
+                <Search className="ml-3 h-5 w-5 text-slate-500 shrink-0" />
+                <input
+                    type="text"
+                    placeholder="Roll Number (e.g. F23607022)"
+                    value={value}
+                    onChange={handleChange}
+                    autoComplete="off"
+                    autoCapitalize="characters"
+                    className="w-full bg-transparent px-3 py-2 text-base font-semibold uppercase tracking-wider text-white placeholder-slate-500 focus:outline-none"
+                />
+                <Button type="submit" size="md" className="shrink-0 flex items-center gap-1.5 px-6">
+                    <span>Search</span>
+                    <ArrowRight className="h-4 w-4" />
+                </Button>
+            </div>
+            {formatError && <p className="text-xs text-red-400 pl-2">{formatError}</p>}
         </form>
     );
 }

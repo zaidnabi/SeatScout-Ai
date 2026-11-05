@@ -1,7 +1,6 @@
-
 import { Loader2 } from "lucide-react";
 
-export function Spinner({ className = "h-8 w-8 text-indigo-600" }: { className?: string }) {
+export function Spinner({ className = "h-8 w-8 text-purple-500" }: { className?: string }) {
     return (
         <div role="status" aria-label="Loading" className="flex items-center justify-center p-4">
             <Loader2 className={`animate-spin ${className}`} />

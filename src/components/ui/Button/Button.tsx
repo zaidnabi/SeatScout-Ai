@@ -13,20 +13,20 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className = "", variant = "primary", size = "md", isLoading, children, disabled, ...props }, ref) => {
         const baseStyles =
-            "inline-flex items-center justify-center font-medium rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]";
+            "inline-flex items-center justify-center font-semibold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]";
 
         const variants = {
-            primary: "bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 shadow-sm",
-            secondary: "bg-slate-100 text-slate-900 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700",
-            outline: "border border-slate-300 bg-transparent hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800 dark:text-slate-100",
-            ghost: "hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-100",
-            danger: "bg-red-600 text-white hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 shadow-sm",
+            primary: "purple-gradient-btn text-white shadow-lg shadow-purple-900/30",
+            secondary: "bg-[#161622] text-white hover:bg-[#202030] border border-[#2b2b40]",
+            outline: "border border-purple-500/40 text-purple-300 hover:bg-purple-500/10",
+            ghost: "text-slate-300 hover:text-white hover:bg-white/5",
+            danger: "bg-red-600/90 text-white hover:bg-red-600 border border-red-500/40",
         };
 
         const sizes = {
-            sm: "h-9 px-3 text-xs min-h-[36px]",
-            md: "h-11 px-4 text-sm min-h-[44px]",
-            lg: "h-13 px-6 text-base min-h-[52px]",
+            sm: "h-9 px-3.5 text-xs min-h-[36px]",
+            md: "h-11 px-5 text-sm min-h-[44px]",
+            lg: "h-13 px-7 text-base min-h-[52px]",
         };
 
         return (
