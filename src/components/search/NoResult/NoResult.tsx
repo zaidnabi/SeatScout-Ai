@@ -3,9 +3,6 @@ import { SearchX } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 
-import Link from "next/link";
-import { SearchX } from "lucide-react";
-import { Button } from "@/components/ui/Button";
 
 export function NoResult({ roll }: { roll: string }) {
     return (

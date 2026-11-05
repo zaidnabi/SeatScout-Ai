@@ -1,10 +1,4 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { SearchBar } from "@/components/search/SearchBar";
-import { LatestPlanInfo } from "@/components/search/LatestPlanInfo";
-import { Disclaimer } from "@/components/ui/Disclaimer";
-
-import Link from "next/link";
 import { Search, Sparkles, Bot, FileText, Database, ArrowRight, Zap, RefreshCw, ChevronRight, Send } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 

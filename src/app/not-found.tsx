@@ -1,9 +1,6 @@
 import Link from "next/link";
 import { FileQuestion, ArrowLeft } from "lucide-react";
 
-import Link from "next/link";
-import { FileQuestion, ArrowLeft } from "lucide-react";
-
 export default function NotFound() {
     return (
         <div className="flex min-h-screen flex-col items-center justify-center p-6 text-center bg-[#070709] text-white">
